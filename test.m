@@ -1,16 +1,16 @@
-clear all
 close all
 clc
 
-% keplarian elements
-inclination = 51.638; % degree
-eccentricity = 0.00075;
-raan = 16.838; %hour
-argPerigee = 337.730; % degree
-meanAnomaly = 168.214; % degree
-orbitalPeriod = 92.971; % min
-altitude = 7000; % km
-semiMajorAxis = 6738; % km
+% orbital parameters
+semiMajorAxis = 6371e3 + 500e3;  % 500 km altitude (6371 km is Earth's radius)
+eccentricity = 0;                % Circular orbit
+inclination = 98;                % Sun-synchronous orbit (~98 degrees)
+rightAscension = 0;              % Right ascension of the ascending node
+argumentOfPeriapsis = 0;         % Argument of periapsis
+trueAnomaly = 0;                 % Initial true anomaly (starting point in the orbit)
+
+
+
 
 % Constants
 startTime = datetime(2020,5,1,11,36,0);
@@ -20,7 +20,10 @@ sampleTime = 60;
 
 % create satellite scenario object and satellite
 scenario = satelliteScenario(startTime, stopTime, sampleTime);
-sat = satellite(scenario,semiMajorAxis,eccentricity,inclination,... 
-        raan,argPerigee,meanAnomaly);
 
-play(scenario,"PlaybackSpeedMultiplier",60);
+% Add the CubeSat to the scenario
+sat = satellite(scenario, semiMajorAxis, eccentricity, inclination, ...
+                rightAscension, argumentOfPeriapsis, trueAnomaly);
+
+viewer = satelliteScenarioViewer(scenario);
+play(scenario);
