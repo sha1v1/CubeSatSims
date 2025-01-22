@@ -5,7 +5,7 @@ semiMajorAxis = 6371e3 + 500e3;  % 500 km altitude
 eccentricity = 0;                % Circular orbit
 inclination = 98;                % Sun-synchronous orbit (~98 degrees)
 rightAscension = 0;              % Initial RAAN
-argumentOfPeriapsis = 0;         % Argument of periapsis
+argumentOfPeriapsis = 0;         % Argument of p=eriapsis
 trueAnomaly = 0;                 % Initial true anomaly
 
 % Constants
