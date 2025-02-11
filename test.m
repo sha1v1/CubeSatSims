@@ -2,12 +2,12 @@ close all
 clc
 
 % orbital parameters
-semiMajorAxis = 6371e3 + 500e3;  % 500 km altitude (6371 km is Earth's radius)
-eccentricity = 0;                % Circular orbit
-inclination = 98;                % Sun-synchronous orbit (~98 degrees)
-rightAscension = 0;              % Right ascension of the ascending node
-argumentOfPeriapsis = 0;         % Argument of periapsis
-trueAnomaly = 0;                 % Initial true anomaly (starting point in the orbit)
+semiMajorAxis = orbitParams.semiMajorAxis  ;
+eccentricity = orbitParams.eccentricity;                % Circular orbit
+inclination = orbitParams.inclination;                
+rightAscension = orbitParams.RAAN;              % Right ascension of the ascending node
+argumentOfPeriapsis = orbitParams.argPerigee;         % Argument of periapsis
+trueAnomaly = orbitParams.trueAnomaly;                 % Initial true anomaly (starting point in the orbit)
 
 
 
@@ -20,9 +20,19 @@ sampleTime = 60;
 % create satellite scenario object and satellite
 scenario = satelliteScenario(startTime, stopTime, sampleTime);
 
+numericalPropOptions = numericalPropagator(scenario,"GravitationalPotentialModel","spherical-harmonics", "IncludeAtmosDrag",true, ...
+    "IncludeThirdBodyGravity", true,"IncludeSRP",true);
+
+
 % Add the CubeSat to the scenario
 sat = satellite(scenario, semiMajorAxis, eccentricity, inclination, ...
-                rightAscension, argumentOfPeriapsis, trueAnomaly);
+                rightAscension, argumentOfPeriapsis, trueAnomaly, 'Name','MANTIS','OrbitPropagator','numerical');
+
+% dual cone eclipse object. does not include lunar eclipse
+ecSat = eclipse(sat, "IncludeLunarEclipse",false);
+ecIntervals = eclipseIntervals(ecSat);
+ecFraction = eclipsePercentage(ecSat);
 
 viewer = satelliteScenarioViewer(scenario);
 play(scenario);
+disp(ecFraction);
