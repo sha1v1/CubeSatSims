@@ -12,7 +12,7 @@ trueAnomaly = orbitParams.trueAnomaly;                 % Initial true anomaly (s
 
 
 % Constants
-startTime = datetime(2020,5,1,11,36,0);
+startTime = datetime(2026,6,1,11,36,0);
 stopTime = startTime + days(1);
 sampleTime = 60;
 
@@ -27,11 +27,11 @@ numericalPropOptions = numericalPropagator(scenario,"GravitationalPotentialModel
 sat = satellite(scenario, semiMajorAxis, eccentricity, inclination, ...
                 rightAscension, argumentOfPeriapsis, trueAnomaly, 'Name','MANTIS','OrbitPropagator','numerical');
 
-% get the position and velocity in ECI (GCRF)
-[pos_eci, vel_eci, time] = states(sat);
+% get the position and velocity in ECEF
+[pos_ecef, vel_ecef, time] = states(sat, CoordinateFrame="ecef");
 % transpose both vectors to a column vector:
-pos_eci = pos_eci.';
-vel_eci = vel_eci.';
+pos_ecef = pos_ecef.';
+vel_ecef = vel_ecef.';
 time = time.';
 
 % need to convert the date/time variable time to a 1x6 row vector of time
@@ -41,7 +41,7 @@ time = datevec(time);
 % Now use eci2lla function to get lattitude and longitudes of the satellite
 % position:
 % Output format is: LLA = [Lat Long Alt]
-LLA = eci2lla(pos_eci,time);
+LLA = ecef2lla(pos_ecef);
 
 % Plot the satellite ground track over the earth:
 figure(1)
@@ -57,3 +57,14 @@ plotm(LLA(:,1),LLA(:,2),'r:','LineWidth',1)
 title('Satellite Ground Track','interpreter','latex')
 xlabel('Longitude','interpreter','latex')
 ylabel('Latittude','interpreter','latex')
+
+
+% save data to an output file
+latitude = LLA(:,1);
+longitude = LLA(:,2);
+timeString = datetime(time, 'Format', 'yyyy-MM-dd HH:mm:ss');
+outputTable = table(timeString, latitude, longitude, ...
+    'VariableNames', {'Time', 'Latitude', 'Longitude'});
+
+% write output to a csv file
+writetable(outputTable, 'satellite_groundtrack.csv');
