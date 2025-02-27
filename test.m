@@ -1,13 +1,17 @@
 close all
 clc
 
+%CHOOSE ORBIT FROM CONFIGS
+orbits = orbitLibrary();
+orbit = orbits.SSO_550;
+
 % orbital parameters
-semiMajorAxis = orbitParams.semiMajorAxis  ;
-eccentricity = orbitParams.eccentricity;                % Circular orbit
-inclination = orbitParams.inclination;                
-rightAscension = orbitParams.RAAN;              % Right ascension of the ascending node
-argumentOfPeriapsis = orbitParams.argPerigee;         % Argument of periapsis
-trueAnomaly = orbitParams.trueAnomaly;                 % Initial true anomaly (starting point in the orbit)
+semiMajorAxis = orbit.semiMajorAxis*1000  ;
+eccentricity = orbit.eccentricity;                % Circular orbit
+inclination = orbit.inclination;                
+rightAscension = orbit.RAAN;              % Right ascension of the ascending node
+argumentOfPeriapsis = orbit.argPerigee;         % Argument of periapsis
+trueAnomaly = orbit.trueAnomaly;                 % Initial true anomaly (starting point in the orbit)
 
 
 
