@@ -1,3 +1,5 @@
+% so I don't have to run it manually everytime, as its a dependency. 
+run("orbitLibrary.m");
 
 % load orbit parameters
 params = orbitLibrary();
